@@ -17,12 +17,42 @@ namespace week06
     public partial class Form1 : Form
     {
         BindingList<RateData> Rates = new BindingList<RateData>();
+        BindingList<string> Currencies = new BindingList<string>();
         string result;
         public Form1()
         {
             InitializeComponent();
+            currency(GetCurrencies().ToString());
+            RefreshData();
+            ShowData();
+            
+        }
+        public void currency(string xmll)
+        {
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(xmll);
+
+            foreach (XmlElement item in xml.DocumentElement.ChildNodes[0])
+            {
+                Currencies.Add(item.InnerText);
+            }
+            comboBoxCurrency.DataSource = Currencies;
+        }
+        string GetCurrencies()
+        {
+            var mnbService = new MNBArfolyamServiceSoapClient();
+
+            var requestCurr = new GetCurrenciesRequestBody();
+            var responseCurr = mnbService.GetCurrencies(requestCurr);
+            var resultCurr = responseCurr.GetCurrenciesResult;
+            return resultCurr;
+        }
+
+        public void RefreshData()
+        {
+            Rates.Clear();
             LoadWeb();
-            //ShowData();
+            ShowData();
             dataGridView1.DataSource = Rates;
             Xml(result);
         }
@@ -31,9 +61,10 @@ namespace week06
             var mnbService = new MNBArfolyamServiceSoapClient();
             var request = new GetExchangeRatesRequestBody()
             {
-                currencyNames = "EUR",
-                startDate = "2020-01-01",
-                endDate = "2020-06-30"
+                currencyNames = comboBoxCurrency.SelectedItem.ToString(),
+                startDate = dateTimePickerStart.Value.ToString(),
+                endDate = dateTimePickerEnd.Value.ToString(),
+                //currencyNames = "EUR"
             };
             var response = mnbService.GetExchangeRates(request);
             result = response.GetExchangeRatesResult;
@@ -73,6 +104,8 @@ namespace week06
 
                 // Valuta
                 var childElement = (XmlElement)element.ChildNodes[0];
+                if (childElement == null)
+                    continue;
                 rate.Currency = childElement.GetAttribute("curr");
 
                 // Érték
@@ -81,6 +114,21 @@ namespace week06
                 if (unit != 0)
                     rate.Value = value / unit;
             }
+        }
+
+        private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void comboBoxCurrency_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshData();
         }
     }
 }
