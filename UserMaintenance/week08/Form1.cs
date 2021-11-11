@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using week08.Entities;
 
 namespace week08
 {
@@ -15,6 +16,32 @@ namespace week08
         public Form1()
         {
             InitializeComponent();
+            Factory = new BallFactory();
+        }
+
+        private List<Ball> _balls = new List<Ball>();
+        private BallFactory _factory;
+        public BallFactory Factory
+        {
+
+            get { return _factory; }
+            set { _factory = value; }
+        }
+
+        private void createTimer_Tick(object sender, EventArgs e)
+        {
+            var ball = Factory.CreateNew();
+            _balls.Add(ball);
+            ball.Left = -ball.Width;
+            mainPanel.Controls.Add(ball);
+        }
+
+        private void conveyorTimer_Tick(object sender, EventArgs e)
+        {
+            foreach (Ball ball in _balls)
+            {
+
+            }
         }
     }
 }
