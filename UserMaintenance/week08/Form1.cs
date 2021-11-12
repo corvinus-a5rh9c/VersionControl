@@ -38,9 +38,18 @@ namespace week08
 
         private void conveyorTimer_Tick(object sender, EventArgs e)
         {
+            var maxPosition = 0;
             foreach (Ball ball in _balls)
             {
-
+                ball.MoveBall();
+                if (ball.Left > maxPosition)
+                    maxPosition = ball.Left;
+            }
+            if (maxPosition > 1000)
+            {
+                var oldestBall = _balls[0];
+                mainPanel.Controls.Remove(oldestBall);
+                _balls.Remove(oldestBall);
             }
         }
     }
