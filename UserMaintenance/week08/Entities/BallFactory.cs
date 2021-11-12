@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserMaintenance.Abstractions;
-using week08.Abstractions;
 
 namespace week08.Entities
 {
-    public class BallFactory: IToyFactory
+    public class BallFactory : Abstractions.IToyFactory
     {
-        public Toy CreateNew()
+        Toy Abstractions.IToyFactory.CreateNew()
         {
             return new Ball();
         }
