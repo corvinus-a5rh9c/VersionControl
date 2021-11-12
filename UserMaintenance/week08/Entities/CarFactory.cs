@@ -8,9 +8,9 @@ using week08.Abstractions;
 
 namespace week08.Entities
 {
-    public class CarFactory : Abstractions.IToyFactory
+    class CarFactory : IToyFactory
     {
-        Toy Abstractions.IToyFactory.CreateNew()
+        public Toy CreateNew()
         {
             return new Car();
         }

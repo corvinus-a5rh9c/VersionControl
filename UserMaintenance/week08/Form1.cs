@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using UserMaintenance.Abstractions;
+using week08.Abstractions;
 using week08.Entities;
 
 namespace week08
@@ -21,8 +22,8 @@ namespace week08
         }
 
         private List<Toy> _toys = new List<Toy>();
-        private BallFactory _factory;
-        public BallFactory Factory
+        private IToyFactory _factory;
+        public IToyFactory Factory
         {
 
             get { return _factory; }
@@ -65,7 +66,10 @@ namespace week08
 
         private void Ballbutton_Click(object sender, EventArgs e)
         {
-            Factory = new BallFactory();
+            Factory = new BallFactory
+            {
+                BallColor = btnBallColor.BackColor
+            };
         }
 
         private void DisplayNext()
