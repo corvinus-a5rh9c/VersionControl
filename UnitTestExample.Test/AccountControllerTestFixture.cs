@@ -28,7 +28,7 @@ namespace UnitTestExample.Test
             // Assert
             Assert.AreEqual(expectedResult, actualResult);
         }
-    
+
         [
             Test,
             TestCase("Budapest", false),
@@ -37,7 +37,7 @@ namespace UnitTestExample.Test
             TestCase("Buda12", false),
             TestCase("Budapest123", true)
             ]
-    public void TestValidatePassword(string password, bool expectedResult)
+        public void TestValidatePassword(string password, bool expectedResult)
         {
             // Arrange
             var accountController = new AccountController();
@@ -49,10 +49,28 @@ namespace UnitTestExample.Test
             Assert.AreEqual(expectedResult, actualResult);
             //"A jelszó legalább 8 karakter hosszú kell legyen, csak az angol ABC betűiből és számokból állhat, és tartalmaznia kell legalább egy kisbetűt, egy nagybetűt és egy számot.");
         }
-    
-    
-    
-    
+
+        [
+            Test,
+            TestCase("irf@uni-corvinus.hu", "Abcd1234"),
+            TestCase("irf@uni-corvinus.hu", "Abcd1234567"),
+        ]
+        public void TestRegisterHappyPath(string email, string password)
+        {
+            // Arrange
+            var accountController = new AccountController();
+
+            // Act
+            var actualResult = accountController.Register(email, password);
+
+            // Assert
+            Assert.AreEqual(email, actualResult.Email);
+            Assert.AreEqual(password, actualResult.Password);
+            Assert.AreNotEqual(Guid.Empty, actualResult.ID);
+        }
+
+
+
     }
 
 }
