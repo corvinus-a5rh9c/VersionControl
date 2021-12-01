@@ -21,13 +21,20 @@ namespace week09
         public Form1()
         {
             InitializeComponent();
-            Population = GetPopulation(@"C:\Temp\nép.csv");
-            BirthProbabilities = GetBirthProbabilities(@"C:\Temp\születés.csv");
-            DeathProbabilities = GetDeathProbabilities(@"C:\Temp\halál.csv");
+            Population = GetPopulation(textBox1.Text);
 
 
+        }
+
+        public void DisplayResults()
+        {
+
+        }
+
+        public void Simulation(decimal szam)
+        {
             // Végigmegyünk a vizsgált éveken
-            for (int year = 2005; year <= 2024; year++)
+            for (int year = 2005; year <= szam; year++)
             {
                 // Végigmegyünk az összes személyen
                 for (int i = 0; i < Population.Count; i++)
@@ -43,8 +50,11 @@ namespace week09
                                     select x).Count();
                 Console.WriteLine(
                     string.Format("Év:{0} Fiúk:{1} Lányok:{2}", year, nbrOfMales, nbrOfFemales));
+                richTextBox1.Text += (
+    string.Format("Szimulációs Év: {0}\n\t Fiúk:{1}\n\t Lányok:{2}\n", year, nbrOfMales, nbrOfFemales));
             }
         }
+
         public List<Person> GetPopulation(string csvpath)
         {
             List<Person> population = new List<Person>();
@@ -110,7 +120,7 @@ namespace week09
             return getDeathProbabilities;
         }
 
-        private void SimStep(int year, Person person)
+        public void SimStep(int year, Person person)
         {
             //Ha halott akkor kihagyjuk, ugrunk a ciklus következő lépésére
             if (!person.IsAlive) return;
@@ -144,6 +154,30 @@ namespace week09
                     Population.Add(újszülött);
                 }
             }
+        }
+
+        public void startButton_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Clear();
+            Simulation(numericUpDown1.Value);
+
+            BirthProbabilities = GetBirthProbabilities(@"C:\Temp\születés.csv");
+            DeathProbabilities = GetDeathProbabilities(@"C:\Temp\halál.csv");
+        }
+
+        
+        private void browseButton_Click(object sender, EventArgs e)
+        {
+            string filePath = "";
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = openFileDialog.FileName;
+                }
+            };
+            textBox1.Text = filePath;
         }
     }
 }
